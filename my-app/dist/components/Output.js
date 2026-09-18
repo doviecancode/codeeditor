@@ -35,7 +35,7 @@ var Output = function Output(_ref) {
     setIsError = _useState6[1];
   var runCode = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var sourceCode, _yield$executeCode, result, _t;
+      var sourceCode, _yield$executeCode, result, _error$response, _t;
       return _regeneratorRuntime().wrap(function (_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -53,8 +53,13 @@ var Output = function Output(_ref) {
           case 2:
             _yield$executeCode = _context.sent;
             result = _yield$executeCode.run;
-            setOutput(result.output.split("\n"));
-            result.stderr ? setIsError(true) : setIsError(false);
+            if (result.stderr) {
+              setIsError(true);
+              setOutput(result.stderr.split("\n"));
+            } else {
+              setIsError(false);
+              setOutput(result.output ? result.output.split("\n") : [""]);
+            }
             _context.next = 4;
             break;
           case 3:
@@ -63,7 +68,7 @@ var Output = function Output(_ref) {
             console.log(_t);
             toast({
               title: "An error occurred.",
-              description: _t.message || "Unable to run code",
+              description: ((_error$response = _t.response) === null || _error$response === void 0 || (_error$response = _error$response.data) === null || _error$response === void 0 ? void 0 : _error$response.message) || _t.message || "Unable to run code",
               status: "error",
               duration: 6000
             });
